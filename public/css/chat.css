@@ -1,0 +1,40 @@
+body
+{
+    background-color: silver;
+}
+.container{
+    background-color: white;
+    box-shadow: 0 0 15px gray;
+    margin: 50px auto;
+    padding: 15px;
+}
+header{
+    background-color: slategray;
+    padding: 20px;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 0 5px black;
+}
+main{
+    padding: 20px;
+}
+label,h6{
+    font-style: italic;
+    color: slategray;
+}
+footer{
+    background-color: rgb(87, 93, 100);
+    color: white;
+    text-align: center;
+    font-size: 80%;
+    padding: 10px;
+    letter-spacing: 3px;
+}
+.chat-messages{
+    height: 500px;
+    border: 1px solid silver;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 5px;
+}

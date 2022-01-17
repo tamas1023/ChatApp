@@ -1,0 +1,27 @@
+<%- include('header') %>
+<div class="row">
+    <aside class="col-sm-3">
+        <h6>Roomname</h6>
+        <div id="roomname">
+
+        </div>
+        <h6>Users</h6>
+        <ul id="userslist">
+            
+        </ul>
+        <a href="/" class="btn btn-primary">Logout</a>
+    </aside>
+    <section class="col-sm-9">
+        <h6>Chat Stream</h6>
+        <div class="chat-messages"></div>
+        <div class="input-group">
+            <input type="text" name="msgTxt" class="form-control" placeholder="Type a message..."  id="">
+            <button class="btn btn-success">Send</button>
+        </div>
+    </section>
+
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="../js/app.js"></script>
+
+<%- include('footer') %>    

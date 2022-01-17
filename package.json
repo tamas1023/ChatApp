@@ -1,0 +1,30 @@
+{
+  "name": "chatapp",
+  "version": "1.0.0",
+  "description": "Node.js + Express + EJS + Socket.io",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tamas1023/ChatApp.git"
+  },
+  "author": "BT",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tamas1023/ChatApp/issues"
+  },
+  "homepage": "https://github.com/tamas1023/ChatApp#readme",
+  "dependencies": {
+    "ejs": "^3.1.6",
+    "express": "^4.17.2",
+    "express-session": "^1.17.2",
+    "socket.io": "^4.4.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
