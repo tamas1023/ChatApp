@@ -34,7 +34,57 @@ footer{
 .chat-messages{
     height: 500px;
     border: 1px solid silver;
-    margin-bottom: 15px;
     padding: 10px;
     border-radius: 5px;
+    text-align: justify;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    
+}
+.message{
+    background-color: silver;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    margin-left: 15px;
+    position: relative;
+}
+
+.message::after{
+    content: '';
+    position: absolute;
+    display: block;
+    width: 10px;
+    z-index: 1;
+    border-style: solid;
+    border-color: transparent #efefef transparent transparent;
+    border-width: 10px 15px 10px 0;
+    top: 33px;
+    left: -15px;
+    margin-top: -20px;
+
+}
+p{
+    padding:0;
+    margin:0;
+}
+
+span{
+    float: right;
+    color: slategray;
+    font-style: italic;
+    font-size: 80%;
+    padding-right: 10px;
+
+}
+.uname{
+    color: black;
+    font-weight: bold;
+}
+#feedback{
+    color: gray;
+    font-style: italic;
+    font-size: 90%;
+    height: 25px;
 }

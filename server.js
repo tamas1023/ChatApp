@@ -6,7 +6,8 @@ const socketio=require("socket.io");
 const app= express();
 const server=http.createServer(app);
 const port=3000;
-const {joinUser}=require('./user/users.js');
+const {joinUser, getRoomUsers,userLeave,getCurrentUser}=require('./utils/users.js');
+const {formatMessage}=require('./utils/messages.js');
 //socket io server
 const io=socketio(server);
 app.set('view engine','ejs');
@@ -34,8 +35,47 @@ io.on('connection',(socket)=>{
     //client connected to room
     socket.on('JoinToRoom',()=>{
         const user=joinUser(socket.id,session.nickname,session.roomname);
-        console.table(user);
-        io.emit('updateRoom',{room: session.roomname});
+
+        //join the room
+        socket.join(user.room);
+    
+        //console.table(user);
+        //update room info
+        io.to(user.room).emit('updateRoom',session.roomname,getRoomUsers(session.roomname));
+
+        //wellcome current user
+        socket.emit('message',formatMessage('Sytem',`Welcome to the ${user.room}!`));
+
+        //broadcast another user
+        //users.js ből jön a .name  mert onnan vettük , ezért jön vele a user.name
+        socket.broadcast.to(user.room).emit('message',formatMessage('Sytem',`${user.name} joined to the room!`));    
+    });
+
+    //listen for messages
+    socket.on('message',(msg)=>{
+        //broadcast to another user
+        //lekérjük hogy éppenséggel melyik user küldte az üzenetet, az a socket 
+        //amin beérkezik, azaz socket.io (ha minden igaz)!?
+        const user=getCurrentUser(socket.id);
+        socket.broadcast.to(user.room).emit('message',formatMessage(user.name,msg));   
+    });
+
+    //when anybody typing....
+    socket.on('typing',(id)=>{
+        const user= getCurrentUser(id);
+        socket.broadcast.to(user.room).emit('typing',`${user.name} is typing...`);
+    });
+
+
+    //client leave room
+    socket.on('disconnect',()=>{
+        const user=userLeave(socket.id);
+
+        //broadcast to another users
+        io.to(user.room).emit('message',formatMessage('System',`${user.name} has left the room.`));
+
+        //update room information to another users
+        io.to(user.room).emit('updateRoom',user.room,getRoomUsers(user.room));
     });
 });
 
