@@ -46,24 +46,24 @@ io.on('connection',(socket)=>{
         //wellcome current user
         socket.emit('message',formatMessage('Sytem',`Welcome to the ${user.room}!`));
 
-        //broadcast another user
+        //broadcast another user 
         //users.js ből jön a .name  mert onnan vettük , ezért jön vele a user.name
-        socket.broadcast.to(user.room).emit('message',formatMessage('Sytem',`${user.name} joined to the room!`));    
+        socket.to(user.room).emit('message',formatMessage('Sytem',`${user.name} joined to the room!`));    
     });
 
     //listen for messages
     socket.on('message',(msg)=>{
-        //broadcast to another user
+        //broadcast to another user and self to
         //lekérjük hogy éppenséggel melyik user küldte az üzenetet, az a socket 
         //amin beérkezik, azaz socket.io (ha minden igaz)!?
         const user=getCurrentUser(socket.id);
-        socket.broadcast.to(user.room).emit('message',formatMessage(user.name,msg));   
+        io.to(user.room).emit('message',formatMessage(user.name,msg));
     });
 
     //when anybody typing....
     socket.on('typing',(id)=>{
         const user= getCurrentUser(id);
-        socket.broadcast.to(user.room).emit('typing',`${user.name} is typing...`);
+        socket.to(user.room).emit('typing',`${user.name} is typing...`);
     });
 
 

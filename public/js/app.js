@@ -59,10 +59,13 @@ function outputUserList(users) {
     });
 }
 
-//Add messages to DOM
+//Add messages to DOM  Document Object Model
 function outputMessage(message) {
     const div=document.createElement('div');
     div.classList.add('message');
+    div.classList.add('animate__animated');
+    div.classList.add('animate__slideInLeft');
+    div.classList.add('animate__faster');
     const p=document.createElement('p');
     p.classList.add('uname');
     //a messages.js ből
