@@ -60,6 +60,11 @@ io.on('connection',(socket)=>{
         io.to(user.room).emit('message',formatMessage(user.name,msg));
     });
 
+    //2 class incoming és outgoing, server emitál  atadjuk hogy out vagy in ,kliens fogadja, outputmessage ba, és ott attól függően színez
+    // le kéne tárolni az adatbázisban
+    //de ez így nem jó
+    //login, logout és mysql kapcsolat is kell bele, azt hiszem az autókölcsönzőből ki lehet szedni
+
     //when anybody typing....
     socket.on('typing',(id)=>{
         const user= getCurrentUser(id);
