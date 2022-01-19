@@ -6,3 +6,7 @@ extra: reactions lehetőségek
 mobil nézet optimalizáció
 repository, temwork
 a git linket küldjétek be
+
+
+login, logout és mysql kapcsolat is kell bele, azt hiszem az autókölcsönzőből ki lehet szedni
+css válltoztatása
