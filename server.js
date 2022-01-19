@@ -78,11 +78,13 @@ app.post("/chat",(req,res)=>{
         {
             session.nickname=req.body.nickname;
             session.roomname=req.body.room;
+            
             res.render('chat');
         }
         else
         {
             hiba="Nem megfelelőek az adatok";
+            
             res.render('index',{hiba});
         }
 
@@ -94,7 +96,12 @@ io.on('connection',(socket)=>{
     //client connected to room
     socket.on('JoinToRoom',()=>{
         const user=joinUser(socket.id,session.nickname,session.roomname);
-
+        pool.query(`SELECT * FROM uzenetek WHERE szoba='${user.room}'`,(err,results)=>{
+            if (err) {
+                console.log(err);
+            }
+            console.table(results);
+        });
         //join the room
         socket.join(user.room);
     
@@ -104,7 +111,6 @@ io.on('connection',(socket)=>{
 
         //wellcome current user
         socket.emit('message',formatMessage('Sytem',`Welcome to the ${user.room}!`));
-
         //broadcast another user 
         //users.js ből jön a .name  mert onnan vettük , ezért jön vele a user.name
         socket.to(user.room).emit('message',formatMessage('Sytem',`${user.name} joined to the room!`));    
@@ -116,7 +122,11 @@ io.on('connection',(socket)=>{
         //lekérjük hogy éppenséggel melyik user küldte az üzenetet, az a socket 
         //amin beérkezik, azaz socket.io (ha minden igaz)!?
         const user=getCurrentUser(socket.id);
-        pool.query(`INSERT INTO uzenetek VALUES('${user.room}','${user.name}',CURRENT_TIMESTAMP,${msg})`)
+        pool.query(`INSERT INTO uzenetek VALUES('${user.room}','${user.name}',CURRENT_TIMESTAMP,'${msg}')`,(err)=>{
+            if (err) {
+                console.log(err);
+            }
+        });
         io.to(user.room).emit('message',formatMessage(user.name,msg));
     });
 
