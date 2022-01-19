@@ -3,6 +3,7 @@ const express=require("express");
 var session=require('express-session');
 const ejs=require("ejs");
 const socketio=require("socket.io");
+const sha1= require("sha1");
 const app= express();
 const server=http.createServer(app);
 const port=3000;
@@ -10,6 +11,7 @@ const {joinUser, getRoomUsers,userLeave,getCurrentUser}=require('./utils/users.j
 const {formatMessage}=require('./utils/messages.js');
 //socket io server
 const io=socketio(server);
+const mysql=require('mysql');
 app.set('view engine','ejs');
 app.use(express.static('public'));
 app.use(express.urlencoded({extended:true}));
@@ -19,15 +21,72 @@ app.use(session({
     saveUninitialized:true
 }))
 
-app.get('/',(req,res)=>{
-    res.render('index');
+const pool=mysql.createPool({
+    host:'localhost',
+    user:'root',
+    password:'',
+    database:'214szft_chatapp'
 });
 
+pool.getConnection((err,connection)=>{
+    if(err)throw err;
+    console.log("Connected to database Connid:"+connection.threadId);
+});
+
+app.get('/',(req,res)=>{
+    let hiba="";
+    res.render('index',{hiba});
+});
+app.get("/register",(req,res)=>{
+    let hiba='';
+    res.render("register",{hiba});
+});
+
+app.post("/reg",(req,res)=>{
+    let hiba="";
+    let username=req.body.username;
+    let passwd1=req.body.passwd1;
+    let passwd2=req.body.passwd2;
+    pool.query(`SELECT * FROM felhasznalok WHERE nev='${username}'`,(err,results)=>{
+        if (err) throw err;
+        if (results.length!=0) {
+            hiba='A felhasználó létezik';
+            res.render('register',{hiba});
+        }
+        else{
+            if (passwd1!=passwd2) {
+                hiba='A jelszavak nem eggyeznek';
+                res.render('register',{hiba});
+            }
+            else{
+                pool.query(`INSERT INTO felhasznalok VALUES(null,'${username}',SHA1('${passwd1}'))`,(err)=>{
+                    if(err)throw err;
+                    let hiba='';
+                    res.render('index',{hiba});
+                });
+            }
+        }
+    });
+});
 app.post("/chat",(req,res)=>{
-    session.nickname=req.body.nickname;
-    session.roomname=req.body.room;
-    //console.log(nickname,roomname);
-    res.render('chat');
+    let hiba="";
+    let username=req.body.nickname;
+    let password=req.body.password;
+    pool.query(`SELECT * FROM felhasznalok WHERE nev='${username}' AND jelszo=SHA1('${password}')`,(err,results)=>{
+        if(err)throw err;
+        if(results.length!=0)
+        {
+            session.nickname=req.body.nickname;
+            session.roomname=req.body.room;
+            res.render('chat');
+        }
+        else
+        {
+            hiba="Nem megfelelőek az adatok";
+            res.render('index',{hiba});
+        }
+
+    });
 });
 
 io.on('connection',(socket)=>{
@@ -57,6 +116,7 @@ io.on('connection',(socket)=>{
         //lekérjük hogy éppenséggel melyik user küldte az üzenetet, az a socket 
         //amin beérkezik, azaz socket.io (ha minden igaz)!?
         const user=getCurrentUser(socket.id);
+        pool.query(`INSERT INTO uzenetek VALUES('${user.room}','${user.name}',CURRENT_TIMESTAMP,${msg})`)
         io.to(user.room).emit('message',formatMessage(user.name,msg));
     });
 
