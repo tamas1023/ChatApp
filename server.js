@@ -64,6 +64,7 @@ io.on('connection',(socket)=>{
     // le kéne tárolni az adatbázisban
     //de ez így nem jó
     //login, logout és mysql kapcsolat is kell bele, azt hiszem az autókölcsönzőből ki lehet szedni
+    //css válltoztatása
 
     //when anybody typing....
     socket.on('typing',(id)=>{
