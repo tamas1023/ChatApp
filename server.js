@@ -81,6 +81,7 @@ app.post("/chat",(req,res)=>{
             pool.query(`SELECT * FROM uzenetek WHERE szoba='${session.roomname}'`,(err,results)=>{
                 if(err) throw err;
                 res.render('chat',{results});
+                
             });
         }
         else
