@@ -14,10 +14,17 @@
     <section class="col-sm-9">
         <h6>Chat Stream</h6>
         <div class="chat-messages"> 
+            <% for(let i=0;i<results.length;i++){%>
+                <div class="message animate__animated animate__slideInLeft animate__faster" >
+                    <p class="uname"><%=results[i].felhasznalo%>  <span><%= results[i].mikor %></span> </p>
+                    <p><%=results[i].uzenet%></p>
+                </div>
+            <%}%>
         </div>
         <div id="feedback"></div>
         <div class="input-group">
             <input type="text" name="msgTxt"  class="form-control" placeholder="Type a message..."  id="msgTxt">
+           
             <button class="btn btn-success" id="sendBtn">Send</button>
         </div>
     </section>

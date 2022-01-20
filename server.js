@@ -78,8 +78,11 @@ app.post("/chat",(req,res)=>{
         {
             session.nickname=req.body.nickname;
             session.roomname=req.body.room;
+            pool.query(`SELECT * FROM uzenetek WHERE szoba='${session.roomname}'`,(err,results)=>{
+                if(err) throw err;
+                res.render('chat',{results});
+            });
             
-            res.render('chat');
         }
         else
         {
@@ -100,7 +103,7 @@ io.on('connection',(socket)=>{
             if (err) {
                 console.log(err);
             }
-            console.table(results);
+            //console.table(results);
         });
         //join the room
         socket.join(user.room);
